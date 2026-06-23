@@ -6,23 +6,24 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/ismail-hafiane/goinfra/internal/database"
 	"github.com/ismail-hafiane/goinfra/internal/handlers"
 	"github.com/ismail-hafiane/goinfra/internal/middleware"
 )
 
 func main() {
+	// Connect to DB
+	database.Connect()
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
 	}
 
 	mux := http.NewServeMux()
-
-	// Routes
 	mux.HandleFunc("/health", handlers.HealthCheck)
 	mux.HandleFunc("/api/users", handlers.Users)
 
-	// Middleware
 	handler := middleware.Logging(mux)
 	handler = middleware.Recovery(handler)
 

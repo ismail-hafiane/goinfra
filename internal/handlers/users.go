@@ -3,13 +3,9 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
-)
 
-type User struct {
-	ID    int    `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-}
+	"github.com/ismail-hafiane/goinfra/internal/models"
+)
 
 func HealthCheck(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -24,19 +20,27 @@ func Users(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
-		users := []User{
-			{ID: 1, Name: "Ismail", Email: "ismail@goinfra.com"},
-			{ID: 2, Name: "Admin", Email: "admin@goinfra.com"},
+		users, err := models.GetAllUsers()
+		if err != nil {
+			http.Error(w, "Database error", http.StatusInternalServerError)
+			return
 		}
 		json.NewEncoder(w).Encode(users)
 
 	case http.MethodPost:
-		var user User
-		if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
+		var body struct {
+			Name  string `json:"name"`
+			Email string `json:"email"`
+		}
+		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			http.Error(w, "Bad Request", http.StatusBadRequest)
 			return
 		}
-		user.ID = 3
+		user, err := models.CreateUser(body.Name, body.Email)
+		if err != nil {
+			http.Error(w, "Database error", http.StatusInternalServerError)
+			return
+		}
 		w.WriteHeader(http.StatusCreated)
 		json.NewEncoder(w).Encode(user)
 
