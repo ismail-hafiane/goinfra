@@ -9,10 +9,10 @@ import (
 	"github.com/ismail-hafiane/goinfra/internal/database"
 	"github.com/ismail-hafiane/goinfra/internal/handlers"
 	"github.com/ismail-hafiane/goinfra/internal/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func main() {
-	// Connect to DB
 	database.Connect()
 
 	port := os.Getenv("PORT")
@@ -23,6 +23,7 @@ func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/health", handlers.HealthCheck)
 	mux.HandleFunc("/api/users", handlers.Users)
+	mux.Handle("/metrics", promhttp.Handler())
 
 	handler := middleware.Logging(mux)
 	handler = middleware.Recovery(handler)
