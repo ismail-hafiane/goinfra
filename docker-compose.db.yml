@@ -2,10 +2,12 @@ services:
   postgres:
     image: postgres:16
     container_name: goinfra-postgres
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=goinfra
-      - POSTGRES_PASSWORD=goinfra123
-      - POSTGRES_DB=goinfra_db
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
