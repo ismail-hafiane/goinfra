@@ -1,0 +1,28 @@
+services:
+  app1:
+    build: .
+    container_name: goinfra-app1
+    environment:
+      - PORT=8080
+      - DB_HOST=192.168.100.20
+      - DB_PORT=5432
+      - DB_USER=goinfra
+      - DB_PASSWORD=goinfra123
+      - DB_NAME=goinfra_db
+    ports:
+      - "8080:8080"
+    restart: always
+
+  app2:
+    build: .
+    container_name: goinfra-app2
+    environment:
+      - PORT=8080
+      - DB_HOST=192.168.100.20
+      - DB_PORT=5432
+      - DB_USER=goinfra
+      - DB_PASSWORD=goinfra123
+      - DB_NAME=goinfra_db
+    ports:
+      - "8081:8080"
+    restart: always

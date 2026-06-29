@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: goinfra-postgres
+    environment:
+      - POSTGRES_USER=goinfra
+      - POSTGRES_PASSWORD=goinfra123
+      - POSTGRES_DB=goinfra_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  postgres-data:
